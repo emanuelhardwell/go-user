@@ -9,17 +9,16 @@ import (
 
 func main() {
 	// Load configuration and initialize DB
-	db, err := config.ConnectPostgres()
+	err := config.ConnectPostgres()
 	if err != nil {
 		log.Fatalf("ERROR: failed to connect database: %v", err)
 	}
-	//defer db.Close()
-	log.Println(db)
+
 	// Initialize Fiber app
 	app := fiber.New()
 
 	// Register middleware
-	app.Use("/api", config.RequestLogger)
+	app.Use("/", config.RequestLogger)
 
 	log.Fatal(app.Listen(":3000"))
 }
