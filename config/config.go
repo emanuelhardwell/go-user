@@ -5,19 +5,22 @@ import (
 	"log"
 	"os"
 
-	"github.com/emanuelhardwell/go-user/dao"
+	"github.com/emanuelhardwell/go-user/model"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-// ConnectPostgres sets up the GORM connection
-func ConnectPostgres() (*gorm.DB, error) {
+// DB is the global database connection
+var DB *gorm.DB
+
+// ConnectPostgres initializes the global DB
+func ConnectPostgres() error {
 
 	err := godotenv.Load()
 	if err != nil {
-		return nil, fmt.Errorf("error cargando el archivo .env: %w", err)
+		return fmt.Errorf("error cargando el archivo .env: %w", err)
 	}
 
 	dbHost := os.Getenv("DB_HOST")
@@ -31,15 +34,17 @@ func ConnectPostgres() (*gorm.DB, error) {
 		dbHost, dbUser, dbPassword, dbName, dbPort, dbSslMode)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		return nil, err
+		return err
 	}
 
+	DB = db
+
 	// Auto-migrate
-	if err := db.AutoMigrate(&dao.User{}); err != nil {
+	if err := DB.AutoMigrate(&model.User{}); err != nil {
 		log.Printf("migration failed: %v", err)
 	}
 
-	return db, nil
+	return nil
 }
 
 // RequestLogger is a Fiber middleware for logging
