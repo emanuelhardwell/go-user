@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/emanuelhardwell/go-user/config"
+	"github.com/emanuelhardwell/go-user/routes"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -19,6 +20,7 @@ func main() {
 
 	// Register middleware
 	app.Use("/", config.RequestLogger)
+	routes.RegisterUserRoutes(app)
 
 	log.Fatal(app.Listen(":3000"))
 }
