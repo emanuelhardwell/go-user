@@ -1,11 +1,13 @@
 package dao
 
-import "gorm.io/gorm"
+import (
+	"github.com/emanuelhardwell/go-user/config"
+	"github.com/emanuelhardwell/go-user/model"
+)
 
-// User model represents the users table
-type User struct {
-	gorm.Model
-	Name     string
-	Email    string `gorm:"uniqueIndex"`
-	Password string
+// Create inserts a new user record
+type User = model.User
+
+func Create(user *User) error {
+	return config.DB.Create(user).Error
 }
